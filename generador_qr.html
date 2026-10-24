@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de 44 Códigos QR - Extintores SST</title>
+    <!-- Librería para crear códigos QR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .grid-qr {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .tarjeta-qr {
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            page-break-inside: avoid;
+        }
+        .tarjeta-qr h3 {
+            margin: 0 0 5px 0;
+            color: #0f172a;
+            font-size: 1.1rem;
+        }
+        .tarjeta-qr p {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin: 5px 0 10px 0;
+            height: 25px;
+        }
+        .qr-box {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .btn-imprimir {
+            display: block;
+            margin: 0 auto 20px auto;
+            padding: 12px 25px;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-imprimir:hover {
+            background: #15803d;
+        }
+        @media print {
+            .btn-imprimir, .header a { display: none; }
+            body { background: white; }
+            .tarjeta-qr { border: 1px solid #000; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html">← Volver al Panel SST</a>
+        <h1>Catálogo de 44 Códigos QR para Extintores</h1>
+        <p>Escanea cualquier código para abrir directamente el formulario de inspección en línea.</p>
+        <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir Todos los Códigos QR</button>
+    </div>
+
+    <div class="grid-qr" id="contenedorQRs">
+        <!-- Los 44 QRs se generarán automáticamente aquí -->
+    </div>
+
+    <script>
+        // Base de datos completa con las ubicaciones de tus extintores (1 al 44)
+        const listaExtintores = {
+            1: "PORTERIA", 2: "BAÑOS VESTIERES", 3: "OFICINA ADM", 4: "ENTRADA ALM. GEN.",
+            5: "ENTRADA ALM. PLG.", 6: "PASILLO ALM. S. EMG.", 7: "PASILLO ALM. GE. CARTON", 8: "ARMADO DE CARTON PISO 2",
+            9: "OFICINA POSCO", 10: "PEGADO DE STICKERS", 11: "SALIDA EMERGENCIA N° 1", 12: "BAÑOS POSCO",
+            13: "SALIDA EMERGENCIA N° 2", 14: "CUARTO FRIO N-5", 15: "CUARTO FRIO N-7", 16: "CUARTO FRIO VERDES Y DESPAC",
+            17: "HORNOS", 18: "COCINA", 19: "BOTELLONES DE AGUA", 20: "ALM. FERTILIZANTES",
+            21: "SATELITE BOM. MIRFE", 22: "ENTRADA BOM. MIRFE", 23: "SATELITE EN DEPOSITO DE ACPM", 24: "TORRE AIREACION NUEVA",
+            25: "RESPEL", 26: "BOMBA FUM. 1", 27: "BOMBA FUM. 2", 28: "COMEDOR BQ 1",
+            29: "BOMBA FUM. 3", 30: "BOMBA MIRFE 2", 31: "BOMBA FUM. 5", 32: "SATELITE BLOQUE 27",
+            33: "EQUI. SOLDADURA TALLER 1", 34: "EQUI. SOLDADURA TALLER 2", 35: "EQUI. SOLDADURA TALLER 3", 36: "TALLER MTTO 2",
+            37: "TALLER MTTO", 38: "CUARTO COMBUSTIBLES", 39: "CUARTO DE MAQUINAS 2", 40: "OFICINA MIRFE",
+            41: "PLANTA ELECTRICA", 42: "CUARTO DE MAQUINAS 1", 43: "CONSULTORIO MÉDICO", 44: "OFICINAS ATENCION"
+        };
+
+        const contenedor = document.getElementById('contenedorQRs');
+
+        // Generar del 1 al 44 de forma automática apuntando a tu GitHub Pages
+        for (let i = 1; i <= 44; i++) {
+            let ubicacion = listaExtintores[i] || "Área General";
+
+            let tarjeta = document.createElement('div');
+            tarjeta.className = 'tarjeta-qr';
+            tarjeta.innerHTML = `
+                <h3>Extintor N° ${i}</h3>
+                <p>${ubicacion}</p>
+                <div class="qr-box" id="qr_${i}"></div>
+            `;
+            contenedor.appendChild(tarjeta);
+
+            // URL oficial apuntando a tu GitHub Pages con el parámetro id correspondiente
+            let urlDestino = `https://luceritovasa2006-maker.github.io/control-extintores/index.html?id=${i}`;
+
+            new QRCode(document.getElementById(`qr_${i}`), {
+                text: urlDestino,
+                width: 120,
+                height: 120
+            });
+        }
+    </script>
+</body>
+</html>

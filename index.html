@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SST Aplicaciones - Inspección de Extintores</title>
+    <link rel="stylesheet" href="estilo.css">
+    <!-- Librería SheetJS para exportar a Excel directamente desde el navegador -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <!-- Menú Lateral (Visible en PC o si entran por el menú principal) -->
+        <aside class="sidebar">
+            <h2>Módulos SST</h2>
+            <nav class="menu">
+                <button onclick="cargarModulo(1)">1. Extintores</button>
+                <button onclick="cargarModulo(2)">2. Lavaojos</button>
+                <button onclick="cargarModulo(3)">3. Reservorios</button>
+                <button onclick="cargarModulo(4)">4. Hidrantes</button>
+                <button onclick="cargarModulo(5)">5. Camillas</button>
+                <button onclick="cargarModulo(6)">6. Puertas de Emergencia</button>
+                <button onclick="cargarModulo(7)">7. Cilindros de Gas</button>
+                <button onclick="cargarModulo(8)">8. Kit de Derrames</button>
+                <button onclick="cargarModulo(9)">9. Avisos Luminosos</button>
+                <button onclick="cargarModulo(10)">10. Pulsadores de Alarma</button>
+                <button onclick="cargarModulo(11)">11. Inspección de Botiquines</button>
+                <button onclick="cargarModulo(12)">12. Inspección Camillas/Basilas</button>
+                <button onclick="cargarModulo(13)">13. Ducha de Emergencias</button>
+                <button onclick="cargarModulo(14)">14. Primeros Auxilios</button>
+            </nav>
+            <hr>
+            <a href="reportes.html" class="btn-reportes">📊 Ver y Descargar Reportes</a>
+        </aside>
+
+        <!-- Área Central donde se despliega la app -->
+        <main class="contenido-modulo" id="appContainer">
+            <div class="bienvenida">
+                <h3>Bienvenido al Sistema de Gestión e Inspección SST</h3>
+                <p>Selecciona un módulo del menú lateral para realizar una inspección.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Carga de scripts de las aplicaciones -->
+    <script src="app 1 extintores.js"></script>
+    <script src="app 2 lavaojos.js"></script>
+    <script src="app 3 reservorios.js"></script>
+    <script src="app 4 hidrantes.js"></script>
+    <script src="app 5 camillas.js"></script>
+    <script src="app 6 puertas de emergencia.js"></script>
+    <script src="app 7 cilindros de gas.js"></script>
+    <script src="app 8 quit de derrames.js"></script>
+    <script src="app 9 avisos luminosos.js"></script>
+    <script src="app 10 pulsadores de alarma.js"></script>
+    <script src="app 11 expecion de botiquines.js"></script>
+    <script src="app 12 expeccion bacilas.js"></script>
+    <script src="app 13 ducha de emergencias.js"></script>
+    <script src="app 14 primeros auxilios.js"></script>
+
+    <script>
+        // Función general para renderizar módulos
+        function cargarModulo(id) {
+            const container = document.getElementById('appContainer');
+            if (id === 1 && typeof renderApp1 === 'function') renderApp1(container);
+            else if (id === 2 && typeof renderApp2 === 'function') renderApp2(container);
+            else if (id === 13 && typeof renderApp13 === 'function') renderApp13(container);
+            else {
+                container.innerHTML = `<h3>Módulo ${id} en construcción</h3>`;
+            }
+        }
+
+        // DETECTOR AUTOMÁTICO DE CÓDIGO QR
+        // Si entras escaneando un código QR del tipo ?id=X, carga de una vez el Módulo 1 (Extintores)
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('id')) {
+                cargarModulo(1);
+            }
+        });
+    </script>
+</body>
+</html>
