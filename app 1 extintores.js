@@ -11,10 +11,9 @@ function renderApp1(container) {
         // Agrega aquí los links de las imágenes para tus demás extintores...
     };
 
-    // Si el extintor no tiene link propio, usará una imagen por defecto
     const urlImagenFondo = imagenesPorExtintor[idExtintorEscaneado] || "https://images.unsplash.com/photo-1507679799987-c73779587ccf";
     
-    // Aplicar el fondo con un filtro translúcido para mantener la legibilidad
+    // Aplicar el fondo con un filtro translúcido
     const appMain = document.getElementById('appContainer') || document.body;
     appMain.style.backgroundImage = `linear-gradient(rgba(241, 245, 249, 0.88), rgba(241, 245, 249, 0.88)), url('${urlImagenFondo}')`;
     appMain.style.backgroundSize = "cover";
@@ -135,8 +134,15 @@ function renderApp1(container) {
 
                     <div class="acciones-form" style="margin-top: 20px;">
                         <button type="button" class="btn-anterior" onclick="cambiarPestana('hoja1')">← Volver</button>
-                        <button type="button" id="btnDescargarExcelDirecto" style="background-color: #16a34a; color: white; padding: 14px 20px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px;">
-                            📊 GUARDAR Y DESCARGAR EN EXCEL
+                        
+                        <!-- BOTÓN PARA GUARDAR EN LA LISTA ACUMULADA Y GOOGLE DRIVE -->
+                        <button type="button" id="btnGuardarRegistro" style="background-color: #2563eb; color: white; padding: 14px 20px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px;">
+                            💾 GUARDAR Y SINCRONIZAR CON DRIVE
+                        </button>
+
+                        <!-- BOTÓN PARA DESCARGAR EL EXCEL MAESTRO CON TODOS LOS ACUMULADOS -->
+                        <button type="button" id="btnDescargarExcelGeneral" style="background-color: #16a34a; color: white; padding: 14px 20px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px;">
+                            📊 DESCARGAR EXCEL GENERAL (TODOS LOS EXTINTORES)
                         </button>
                     </div>
                 </div>
@@ -144,16 +150,21 @@ function renderApp1(container) {
         </div>
     `;
 
-    document.getElementById('btnDescargarExcelDirecto').addEventListener('click', function() {
+    // 1. GUARDAR INSPECCIÓN Y ENVIAR AUTOMÁTICAMENTE A GOOGLE DRIVE
+    document.getElementById('btnGuardarRegistro').addEventListener('click', function() {
         const registroExtintor = {
             "N° Extintor": document.getElementById('ext_num').value,
             "Ubicación": document.getElementById('ext_ubicacion').value,
             "Agente": document.getElementById('ext_agente').value,
             "Tipo": document.getElementById('ext_tipo').value,
             "Capacidad": document.getElementById('ext_capacidad').value,
+            "Altura": "",
+            "Fecha Registro": new Date().toLocaleString('es-CO'),
+            "Revisión": "",
+            "Vencimiento Programado": "",
+            "Estado": document.getElementById('ext_estado').value,
             "Pintura": document.getElementById('chk_pintura').value,
             "Sello": document.getElementById('chk_sello').value,
-            "Anillo": document.getElementById('chk_anillo').value,
             "Manómetro": document.getElementById('chk_manometro').value,
             "Válvula": document.getElementById('chk_valvula').value,
             "Manguera": document.getElementById('chk_manguera').value,
@@ -164,18 +175,59 @@ function renderApp1(container) {
             "Cilindro": document.getElementById('chk_cilindro').value,
             "Señalización": document.getElementById('chk_senalizacion').value,
             "Demarcación": document.getElementById('chk_demarcacion').value,
-            "Revisado Por": document.getElementById('ext_revisado_por').value,
-            "Estado": document.getElementById('ext_estado').value,
             "Observaciones": document.getElementById('ext_observaciones').value,
-            "Fecha Registro": new Date().toLocaleString('es-CO')
+            "Revisado Por": document.getElementById('ext_revisado_por').value,
+            "Tomar o Adjuntar": "",
+            "Proceso Realizado": "Inspección Mensual",
+            "Fecha de vencimiento verificada": "",
+            "Estado General": document.getElementById('ext_estado').value
         };
 
+        // Obtener los registros guardados previamente o iniciar lista vacía
+        let historial = JSON.parse(localStorage.getItem('registros_extintores')) || [];
+
+        // Reemplazar si ya se había registrado este mismo extintor antes, o agregarlo nuevo
+        const index = historial.findIndex(item => item["N° Extintor"] === registroExtintor["N° Extintor"]);
+        if (index >= 0) {
+            historial[index] = registroExtintor;
+        } else {
+            historial.push(registroExtintor);
+        }
+
+        // Guardar de nuevo en la memoria del navegador
+        localStorage.setItem('registros_extintores', JSON.stringify(historial));
+
+        // Enviar automáticamente a Google Drive con tu enlace
+        const urlGoogleScript = "https://script.google.com/macros/s/AKfycbw3jRyfsI1cTMMtep0wP9UIrgCYknAyMrbIpAdH-V4S98IRdcIn0FjMHeG17GYQoeyC/exec";
+
+        fetch(urlGoogleScript, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registroExtintor)
+        }).then(() => {
+            alert(`✅ ¡Extintor N° ${registroExtintor["N° Extintor"]} (${registroExtintor["Ubicación"]}) guardado y sincronizado en Google Drive con éxito!`);
+        }).catch(err => {
+            console.error("Error:", err);
+            alert("Guardado localmente en el celular, pero hubo un fallo al sincronizar con la nube.");
+        });
+    });
+
+    // 2. DESCARGAR EL EXCEL CON TODOS LOS EXTINTORES ACUMULADOS
+    document.getElementById('btnDescargarExcelGeneral').addEventListener('click', function() {
+        const historial = JSON.parse(localStorage.getItem('registros_extintores')) || [];
+
+        if (historial.length === 0) {
+            alert("⚠️ No hay registros guardados todavía. Inspecciona y guarda al menos un extintor antes de descargar.");
+            return;
+        }
+
         if (typeof XLSX !== 'undefined') {
-            const hoja = XLSX.utils.json_to_sheet([registroExtintor]);
+            const hoja = XLSX.utils.json_to_sheet(historial);
             const libro = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(libro, hoja, "Inspección");
-            XLSX.writeFile(libro, `Inspeccion_Extintor_${registroExtintor["N° Extintor"]}.xlsx`);
-            alert(`✅ ¡Reporte del Extintor N° ${registroExtintor["N° Extintor"]} guardado y descargado en Excel con éxito!`);
+            XLSX.utils.book_append_sheet(libro, hoja, "Consolidado Extintores");
+            XLSX.writeFile(libro, `Consolidado_Inspeccion_Extintores.xlsx`);
+            alert(`✅ ¡Archivo Excel descargado con éxito con ${historial.length} registros de extintores!`);
         } else {
             alert("❌ Error: Falta la librería SheetJS en el archivo index.html");
         }
