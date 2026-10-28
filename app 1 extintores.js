@@ -5,10 +5,7 @@ function renderApp1(container) {
 
     // Diccionario con los enlaces de las imágenes de fondo para cada extintor
     const imagenesPorExtintor = {
-        1: "https://images.unsplash.com/photo-1497366216548-37526070297c", // Ejemplo para Portería
-        2: "URL_IMAGEN_BAÑOS_VESTIERES",
-        3: "URL_IMAGEN_OFICINA_ADM",
-        // Agrega aquí los links de las imágenes para tus demás extintores...
+        1: "https://images.unsplash.com/photo-1497366216548-37526070297c", // Portería
     };
 
     const urlImagenFondo = imagenesPorExtintor[idExtintorEscaneado] || "https://images.unsplash.com/photo-1507679799987-c73779587ccf";
@@ -20,7 +17,7 @@ function renderApp1(container) {
     appMain.style.backgroundPosition = "center";
     appMain.style.backgroundAttachment = "fixed";
 
-    // Lista de ubicaciones de tus 44 extintores
+    // Lista de ubicaciones de los 44 extintores
     const listaUbicaciones = {
         1: "PORTERIA", 2: "BAÑOS VESTIERES", 3: "OFICINA ADM", 4: "ENTRADA ALM. GEN.",
         5: "ENTRADA ALM. PLG.", 6: "PASILLO ALM. S. EMG.", 7: "PASILLO ALM. GE. CARTON", 8: "ARMADO DE CARTON PISO 2",
@@ -135,7 +132,6 @@ function renderApp1(container) {
                     <div class="acciones-form" style="margin-top: 20px;">
                         <button type="button" class="btn-anterior" onclick="cambiarPestana('hoja1')">← Volver</button>
                         
-                        <!-- ÚNICO BOTÓN: GUARDAR Y ENVIAR A GOOGLE DRIVE -->
                         <button type="button" id="btnGuardarRegistro" style="background-color: #2563eb; color: white; padding: 14px 20px; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px;">
                             💾 GUARDAR Y ENVIAR INSPECCIÓN
                         </button>

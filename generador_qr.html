@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de 44 Códigos QR - Extintores SST</title>
     <!-- Librería para crear códigos QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -101,7 +102,7 @@
 
         const contenedor = document.getElementById('contenedorQRs');
 
-        // Generar del 1 al 44 de forma automática apuntando a tu GitHub Pages
+        // Generar del 1 al 44 apuntando a tu nueva URL de GitHub Pages
         for (let i = 1; i <= 44; i++) {
             let ubicacion = listaExtintores[i] || "Área General";
 
@@ -114,8 +115,8 @@
             `;
             contenedor.appendChild(tarjeta);
 
-            // URL oficial apuntando a tu GitHub Pages con el parámetro id correspondiente
-            let urlDestino = `https://luceritovasa2006-maker.github.io/control-extintores/inspeccion.html?id=${i}`;
+            // URL directa con el id del extintor
+            let urlDestino = `https://luceritovasa2006-maker.github.io/sst-extintores/?id=${i}`;
 
             new QRCode(document.getElementById(`qr_${i}`), {
                 text: urlDestino,

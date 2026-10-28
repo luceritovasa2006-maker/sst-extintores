@@ -11,7 +11,7 @@
 <body>
 
     <div class="contenedor-principal">
-        <!-- Menú Lateral (Visible en PC o si entran por el menú principal) -->
+        <!-- Menú Lateral -->
         <aside class="sidebar">
             <h2>Módulos SST</h2>
             <nav class="menu">
@@ -72,7 +72,7 @@
         }
 
         // DETECTOR AUTOMÁTICO DE CÓDIGO QR
-        // Si entras escaneando un código QR del tipo ?id=X, carga de una vez el Módulo 1 (Extintores)
+        // Si se escanea un código QR del tipo ?id=X, carga de inmediato el Módulo 1 (Extintores)
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('id')) {
